@@ -1,0 +1,61 @@
+# Byte-compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Environment files
+.env
+
+# Django-specific files
+db.sqlite3
+/media/
+*.log
+
+# Migration files
+*.pyc
+*.pyo
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Virtual environment
+venv/
+env/
+
+# Static files (when using collectstatic)
+staticfiles/
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+
+# Test artifacts
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Pytest files
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pipenv
+Pipfile.lock
+
+# Celery beat schedule file
+celerybeat-schedule
+
+# Local configurations
+settings_local.py
