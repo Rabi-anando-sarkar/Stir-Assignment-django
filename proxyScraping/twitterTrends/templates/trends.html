@@ -6,7 +6,7 @@
     <title>Trending Topics</title>
     <style>
         body {
-            backgroundColor: #fff;
+            background-color: #fff;
             line-height: 1.6;
         }
     </style>
@@ -15,55 +15,47 @@
     <div class="container">
         <h1>Trending Topics</h1>
         <a id="run-script-link" class="link">Click here to run the script.</a>
-        <div id="trends-content" class="content"></div>
+        <div id="trends-content" class="content">
+            {% if scraped_keyword %}
+                <h3>Scraped Keyword:</h3>
+                <p><strong>{{ scraped_keyword }}</strong></p>
+            {% else %}
+                <p>No data available yet. Run the script to fetch trends.</p>
+            {% endif %}
+        </div>
     </div>
     <script>
-        // Function to fetch trends when the user clicks the link
         async function fetchTrends() {
             const linkElement = document.getElementById('run-script-link');
             const contentElement = document.getElementById('trends-content');
-
-            // Update link text to indicate loading
+    
             linkElement.textContent = "Loading...";
-            linkElement.style.pointerEvents = "none"; // Disable click temporarily
+            linkElement.style.pointerEvents = "none";
+    
             try {
                 // Make an API request to fetch trends
                 const response = await fetch('/trends');
-
+                
                 if (!response.ok) {
-                    throw new Error('Failed to fetch trends');
+                    throw new Error(`Server Error: ${response.statusText}`);
                 }
-
-                // Parse the JSON response
+    
                 const data = await response.json();
-
-                // Get the current date and time
-                const dateTime = new Date().toLocaleString();
-
-                // Display the trends
-                contentElement.innerHTML = `
-                    <p>These are the most happening topics as on <strong>${dateTime}</strong>:</p>
-                    <ul>
-                        <li>${data.trends[0]}</li>
-                        <li>${data.trends[1]}</li>
-                        <li>${data.trends[2]}</li>
-                        <li>${data.trends[3]}</li>
-                        <li>${data.trends[4]}</li>
-                    </ul>
-                    <p>The IP address used for this query was <strong>${data.ip_address}</strong>.</p>
-                    <a class="link" onclick="fetchTrends()">Click here to run the query again</a>
-                `;
+    
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+    
+                // Update the content with fetched trends
+                contentElement.innerHTML = `<h3>Fetched Data:</h3><p>${data.scraped_keyword || "No keyword returned."}</p>`;
             } catch (error) {
-                // Handle errors and display an error message
-                contentElement.innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
+                contentElement.innerHTML = `<p class="error">Error: ${error.message}</p>`;
             } finally {
-                // Reset link text and re-enable click
                 linkElement.textContent = "Click here to run the script.";
                 linkElement.style.pointerEvents = "auto";
             }
         }
-
-        // Attach the fetchTrends function to the link's click event
+    
         document.getElementById('run-script-link').addEventListener('click', fetchTrends);
     </script>
 </body>

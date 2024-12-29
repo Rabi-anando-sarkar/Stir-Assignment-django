@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import pickle
 import time
 
 def login_to_X(username,password):
@@ -43,11 +44,24 @@ def login_to_X(username,password):
         )
         login_button.click()
 
-        current_url = driver.current_url
-        print("Logged in succesfully", current_url)
+        with open("cookies.pkl", "wb") as file:
+            pickle.dump(driver.get_cookies(), file)
+            print("Cookies saved!")
+        print("Logged in successfully and cookies saved.")
 
-        # return the url
-        return driver
+        # Navigate to the trending page
+        driver.get("https://x.com/explore/tabs/trending")
+        time.sleep(5)
+
+        # Scrape top trends
+        try:
+            trends = driver.find_elements((By.XPATH, '//div[contains(@aria-label, "Timeline: Trending now")]'))  # Replace with actual selector
+            for trend in trends:
+                print(trend.text)
+        except Exception as e:
+            print(f"Error while scraping: {e}")
+
+        return trends
     
     except Exception as e:
         print(f"An error occured during login: {e}")
